@@ -9,8 +9,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -517,6 +519,14 @@ public class MaterialIntroView extends RelativeLayout {
      * SETTERS
      */
 
+    private void setIconDrawable(Drawable drawable) {
+        imageViewIcon.setImageDrawable(drawable);
+    }
+
+    private void setIconResource(@DrawableRes int resource) {
+        imageViewIcon.setImageResource(resource);
+    }
+
     private void setMaskColor(int maskColor) {
         this.maskColor = maskColor;
     }
@@ -720,10 +730,22 @@ public class MaterialIntroView extends RelativeLayout {
             return this;
         }
 
+        public Builder setIconResource(@DrawableRes int resource){
+            materialIntroView.setIconResource(resource);
+            return this;
+        }
+
+        public Builder setIconDrawable(Drawable drawable){
+            materialIntroView.setIconDrawable(drawable);
+            return this;
+        }
+
+
         public Builder setListener(MaterialIntroListener materialIntroListener) {
             materialIntroView.setListener(materialIntroListener);
             return this;
         }
+
 
         public Builder performClick(boolean isPerformClick){
             materialIntroView.setPerformClick(isPerformClick);
