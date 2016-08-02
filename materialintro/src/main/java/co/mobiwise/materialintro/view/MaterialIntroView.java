@@ -12,7 +12,6 @@ import android.graphics.PorterDuffXfermode;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,19 +23,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.mobiwise.materialintro.MaterialIntroConfiguration;
+import co.mobiwise.materialintro.R;
 import co.mobiwise.materialintro.animation.AnimationFactory;
 import co.mobiwise.materialintro.animation.AnimationListener;
 import co.mobiwise.materialintro.animation.MaterialIntroListener;
 import co.mobiwise.materialintro.prefs.PreferencesManager;
-import co.mobiwise.materialintro.utils.Constants;
-import co.mobiwise.materialintro.MaterialIntroConfiguration;
-import co.mobiwise.materialintro.R;
-import co.mobiwise.materialintro.utils.Utils;
 import co.mobiwise.materialintro.shape.Circle;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
 import co.mobiwise.materialintro.target.Target;
 import co.mobiwise.materialintro.target.ViewTarget;
+import co.mobiwise.materialintro.utils.Constants;
+import co.mobiwise.materialintro.utils.Utils;
 
 /**
  * Created by mertsimsek on 22/01/16.
@@ -202,6 +201,7 @@ public class MaterialIntroView extends RelativeLayout {
      * if this is true
      */
     private boolean isPerformClick;
+    private View defaultView;
 
     public MaterialIntroView(Context context) {
         super(context);
@@ -259,13 +259,6 @@ public class MaterialIntroView extends RelativeLayout {
         eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         eraser.setFlags(Paint.ANTI_ALIAS_FLAG);
 
-        View layoutInfo = LayoutInflater.from(getContext()).inflate(R.layout.material_intro_card, null);
-
-        infoView = layoutInfo.findViewById(R.id.info_layout);
-        textViewInfo = (TextView) layoutInfo.findViewById(R.id.textview_info);
-        textViewInfo.setTextColor(colorTextViewInfo);
-        imageViewIcon = (ImageView) layoutInfo.findViewById(R.id.imageview_icon);
-
         dotView = LayoutInflater.from(getContext()).inflate(R.layout.dotview, null);
         dotView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 
@@ -283,6 +276,14 @@ public class MaterialIntroView extends RelativeLayout {
             }
         });
 
+    }
+
+    private void setDefaultView(View view){
+        this.defaultView = view;
+    }
+
+    public View getDefaultView() {
+        return defaultView;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -608,6 +609,19 @@ public class MaterialIntroView extends RelativeLayout {
         this.isPerformClick = isPerformClick;
     }
 
+    public void getLayout() {
+        if(this.defaultView == null){
+            this.defaultView = LayoutInflater.from(getContext()).inflate(R.layout.default_coachmark_layout, null);
+        }
+
+        View layoutInfo = this.defaultView;
+
+        infoView = layoutInfo.findViewById(R.id.info_layout);
+        textViewInfo = (TextView) layoutInfo.findViewById(R.id.textview_info);
+        textViewInfo.setTextColor(colorTextViewInfo);
+        imageViewIcon = (ImageView) layoutInfo.findViewById(R.id.imageview_icon);
+    }
+
     /**
      * Builder Class
      */
@@ -619,9 +633,15 @@ public class MaterialIntroView extends RelativeLayout {
 
         private Focus focusType = Focus.MINIMUM;
 
-        public Builder(Activity activity) {
+        public Builder(Activity activity){
+            this(activity, null);
+        }
+
+        public Builder(Activity activity, View view) {
             this.activity = activity;
             materialIntroView = new MaterialIntroView(activity);
+            if(view != null) materialIntroView.setDefaultView(view);
+            materialIntroView.getLayout();
         }
 
         public Builder setMaskColor(int maskColor) {
