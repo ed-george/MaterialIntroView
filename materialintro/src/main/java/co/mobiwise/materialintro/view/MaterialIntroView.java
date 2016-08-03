@@ -538,7 +538,7 @@ public class MaterialIntroView extends RelativeLayout {
 
     private void setNextView(View nextView) {
         this.nextView = nextView;
-        if(this.materialIntroListener != null){
+        if(this.nextView != null && this.materialIntroListener != null){
             nextView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -550,7 +550,7 @@ public class MaterialIntroView extends RelativeLayout {
 
     private void setPrevView(View prevView) {
         this.prevView = prevView;
-        if(this.materialIntroListener != null){
+        if(this.prevView != null && this.materialIntroListener != null){
             prevView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -655,24 +655,25 @@ public class MaterialIntroView extends RelativeLayout {
     }
 
     private void setListener(final MaterialIntroListener materialIntroListener) {
-        if(nextView != null){
-            nextView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss(true);
-                }
-            });
-        }
+        if(materialIntroListener != null) {
+            if (nextView != null) {
+                nextView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dismiss(true);
+                    }
+                });
+            }
 
-        if(prevView != null){
-            prevView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss(false);
-                }
-            });
+            if (prevView != null) {
+                prevView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dismiss(false);
+                    }
+                });
+            }
         }
-
         this.materialIntroListener = materialIntroListener;
     }
 
