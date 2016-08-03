@@ -176,7 +176,7 @@ public class MaterialIntroView extends RelativeLayout {
 
     /**
      * Save/Retrieve status of MaterialIntroView
-     * If Intro is already learnt then don't show
+     * If onIntroDismissed is already learnt then don't show
      * it again.
      */
     private PreferencesManager preferencesManager;
@@ -207,6 +207,15 @@ public class MaterialIntroView extends RelativeLayout {
      * The view to show as a coachmark
      */
     private View defaultView;
+
+    /**
+     * View to set as next button
+     */
+    private View nextView;
+    /**
+     * View to set as previous button
+     */
+    private View prevView;
 
     /**
      * Boolean to override showing previously shown coachmarks
@@ -374,7 +383,7 @@ public class MaterialIntroView extends RelativeLayout {
             case MotionEvent.ACTION_UP:
 
                 if (isTouchOnFocus || dismissOnTouch)
-                    dismiss();
+                    dismiss(true);
 
                 if (isTouchOnFocus && isPerformClick) {
                     targetView.getView().performClick();
@@ -425,9 +434,9 @@ public class MaterialIntroView extends RelativeLayout {
     }
 
     /**
-     * Dismiss Material Intro View
+     * Dismiss Material onIntroDismissed View
      */
-    private void dismiss() {
+    private void dismiss(final boolean isForward) {
         preferencesManager.setDisplayed(materialIntroViewId);
         AnimationFactory.animateFadeOut(this, fadeAnimationDuration, new AnimationListener.OnAnimationEndListener() {
             @Override
@@ -436,7 +445,7 @@ public class MaterialIntroView extends RelativeLayout {
                 removeMaterialView();
 
                 if (materialIntroListener != null)
-                    materialIntroListener.onUserClicked(materialIntroViewId);
+                    materialIntroListener.onIntroDismissed(materialIntroViewId, isForward);
             }
         });
     }
@@ -526,6 +535,30 @@ public class MaterialIntroView extends RelativeLayout {
     /**
      * SETTERS
      */
+
+    private void setNextView(View nextView) {
+        this.nextView = nextView;
+        if(this.materialIntroListener != null){
+            nextView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss(true);
+                }
+            });
+        }
+    }
+
+    private void setPrevView(View prevView) {
+        this.prevView = prevView;
+        if(this.materialIntroListener != null){
+            prevView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss(false);
+                }
+            });
+        }
+    }
 
     private void setOverride(boolean override){ this.overrideShow = override; }
 
@@ -621,7 +654,25 @@ public class MaterialIntroView extends RelativeLayout {
         this.materialIntroViewId = materialIntroViewId;
     }
 
-    private void setListener(MaterialIntroListener materialIntroListener) {
+    private void setListener(final MaterialIntroListener materialIntroListener) {
+        if(nextView != null){
+            nextView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss(true);
+                }
+            });
+        }
+
+        if(prevView != null){
+            prevView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss(false);
+                }
+            });
+        }
+
         this.materialIntroListener = materialIntroListener;
     }
 
@@ -760,6 +811,15 @@ public class MaterialIntroView extends RelativeLayout {
             return this;
         }
 
+        public Builder setNextButton(View view){
+            materialIntroView.setNextView(view);
+            return this;
+        }
+
+        public Builder setPrevButton(View view){
+            materialIntroView.setPrevView(view);
+            return this;
+        }
 
         public Builder performClick(boolean isPerformClick){
             materialIntroView.setPerformClick(isPerformClick);
