@@ -203,7 +203,15 @@ public class MaterialIntroView extends RelativeLayout {
      * if this is true
      */
     private boolean isPerformClick;
+    /**
+     * The view to show as a coachmark
+     */
     private View defaultView;
+
+    /**
+     * Boolean to override showing previously shown coachmarks
+     */
+    private boolean overrideShow;
 
     public MaterialIntroView(Context context) {
         super(context);
@@ -392,7 +400,7 @@ public class MaterialIntroView extends RelativeLayout {
      */
     private void show(Activity activity) {
 
-        if (preferencesManager.isDisplayed(materialIntroViewId))
+        if (preferencesManager.isDisplayed(materialIntroViewId) && !overrideShow)
             return;
 
         ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
@@ -518,6 +526,8 @@ public class MaterialIntroView extends RelativeLayout {
     /**
      * SETTERS
      */
+
+    private void setOverride(boolean override){ this.overrideShow = override; }
 
     private void setIconDrawable(Drawable drawable) {
         imageViewIcon.setImageDrawable(drawable);
@@ -740,6 +750,10 @@ public class MaterialIntroView extends RelativeLayout {
             return this;
         }
 
+        public Builder overridePrefs(){
+            materialIntroView.setOverride(true);
+            return this;
+        }
 
         public Builder setListener(MaterialIntroListener materialIntroListener) {
             materialIntroView.setListener(materialIntroListener);
