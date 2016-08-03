@@ -802,8 +802,8 @@ public class MaterialIntroView extends RelativeLayout {
             return this;
         }
 
-        public Builder overridePrefs(){
-            materialIntroView.setOverride(true);
+        public Builder overridePrefs(boolean shouldOverride){
+            materialIntroView.setOverride(shouldOverride);
             return this;
         }
 
