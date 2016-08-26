@@ -382,7 +382,7 @@ public class MaterialIntroView extends RelativeLayout {
                 return true;
             case MotionEvent.ACTION_UP:
 
-                if (isTouchOnFocus || dismissOnTouch)
+                if (isTouchOnFocus && dismissOnTouch)
                     dismiss(true);
 
                 if (isTouchOnFocus && isPerformClick) {
